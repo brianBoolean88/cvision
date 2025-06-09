@@ -1,18 +1,71 @@
 "use client";
 import React, { useState } from 'react';
-import UploadSection from './UploadSection.jsx';
 
 const FileUpload = () => {
     const [fileName, setFileName] = useState(null);
+    const [file, setFile] = useState(null);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && file.type === 'application/pdf') {
             setFileName(file.name);
-            // You can later upload this file to AWS S3 or process it
+            setFile(file);
         } else {
             alert("Please upload a valid PDF file.");
         }
+    };
+
+    const uploadPDF = async (file) => {
+        const res = await fetch(`/api/upload-url?fileName=${file.name}`);
+
+        console.log("Received upload URL response:", res);
+        const { url } = await res.json();
+
+        console.log("Uploading to S3:", url);
+        if (!url) {
+            throw new Error("Failed to get upload URL");
+        }
+
+        console.log("Uploading file:", file.name);
+
+        await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/pdf",
+            },
+            body: file,
+        });
+
+        console.log("File uploaded successfully:", file.name);
+
+        return file.name; // key used to retrieve it later
+    };
+
+    const handleSubmit = async () => {
+
+        /*
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            body: JSON.stringify({ fileName }),
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const result = await response.json();
+
+        router.push(`/results?score=${result.score}`);
+        */
+
+        if (!file) {
+            alert("Please select a file to upload.");
+            return;
+        }
+
+       uploadPDF(file)
+        .then((key) => {
+            console.log("File uploaded successfully:", key);
+            // Here you can redirect to results or show a success message
+            // router.push(`/results?fileName=${key}`);
+        })
+        //router.push('/results');
     };
 
     return (
@@ -28,7 +81,10 @@ const FileUpload = () => {
                 />
                 {fileName && <p className="text-slate-100">Selected File: {fileName}</p>}
 
-                <UploadSection />
+                <button
+                    onClick={handleSubmit}
+                    className="mt-6 bg-purple-600 text-white px-6 py-3 rounded-full mx-auto font-semibold hover:bg-purple-700 transition duration-300"
+                >Submit</button>
             </div>
 
         </section>
