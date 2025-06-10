@@ -7,25 +7,20 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ResumeAnalysis')
 
 def analyze_text(text):
-    # Define sample data
     technical_keywords = ["Python", "Java", "JavaScript", "C++", "AWS", "React", "Node.js", "SQL", "Machine Learning", "Docker"]
     soft_skills = ["communication", "teamwork", "leadership", "adaptability", "problem-solving", "collaboration"]
     action_verbs = ["developed", "created", "led", "implemented", "designed", "initiated", "achieved", "optimized"]
     certifications = ["AWS Certified", "Google Cloud Certified", "Certified Scrum Master", "PMP", "CompTIA"]
     
-    # Normalize text
     lower_text = text.lower()
     
-    # Scoring
     tech_matches = [kw for kw in technical_keywords if kw.lower() in lower_text]
     soft_matches = [kw for kw in soft_skills if kw in lower_text]
     verb_matches = [kw for kw in action_verbs if kw in lower_text]
     cert_matches = [kw for kw in certifications if kw.lower() in lower_text]
 
-    # Quantified impact — look for numbers + keywords
     quantified = re.findall(r'\b(\d+[\w%$]*)\b.*?\b(projects?|users?|clients?|sales|revenue|growth|savings?)', lower_text)
 
-    # Scoring logic
     scores = {
         "Technical Skills": min(len(tech_matches) * 10, 100),
         "Soft Skills": min(len(soft_matches) * 15, 100),
