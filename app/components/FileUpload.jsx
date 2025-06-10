@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const FileUpload = () => {
     const [fileName, setFileName] = useState(null);
     const [file, setFile] = useState(null);
+    const router = useRouter();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -39,7 +41,23 @@ const FileUpload = () => {
         console.log("File uploaded successfully:", file.name);
 
         return file.name; // key used to retrieve it later
-    };
+    }
+
+
+    async function analyzeResume(fileName) {
+        const response = await fetch('https://x1rtfdikxc.execute-api.us-west-1.amazonaws.com/dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fileName }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to analyze resume');
+        }
+
+        const result = await response.json();
+        return result;
+    }
 
     const handleSubmit = async () => {
 
@@ -59,12 +77,25 @@ const FileUpload = () => {
             return;
         }
 
-       uploadPDF(file)
-        .then((key) => {
-            console.log("File uploaded successfully:", key);
-            // Here you can redirect to results or show a success message
-            // router.push(`/results?fileName=${key}`);
-        })
+        uploadPDF(file)
+            .then((key) => {
+                console.log("File uploaded successfully:", key);
+                // Here you can redirect to results or show a success message
+                // router.push(`/results?fileName=${key}`);
+                analyzeResume(key)
+                    .then((result) => {
+                        console.log("Analysis result:", result);
+                        // You can redirect to results page with the analysis data
+                        // router.push(`/results?data=${encodeURIComponent(JSON.stringify(result))}`);
+                        localStorage.setItem('resumeResults', JSON.stringify(result));
+                        router.push('/results');
+                    })
+                    .catch((error) => {
+                        console.error("Error analyzing resume:", error);
+                        alert("Failed to analyze resume. Please try again.");
+                    });
+                
+            })
         //router.push('/results');
     };
 

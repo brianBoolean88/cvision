@@ -104,6 +104,7 @@ const Results = ({ results }) => {
         router.push('/');
     };
 
+
     if (!results) {
         return (
             <section className="py-20 bg-slate-500 text-slate-200 text-center">
@@ -112,6 +113,11 @@ const Results = ({ results }) => {
         );
     }
 
+    console.log("Parsed Results:", results);
+    results = results.body; // Ensure results is in the expected format
+    console.log("Parsed Results:", results);
+    results = JSON.parse(results); // Parse the results if they are in string format
+    
     return (
         <section className="py-20 bg-slate-400 text-white scroll-smooth">
             <div className="container mx-auto px-6 md:px-12 lg:px-24">
@@ -139,7 +145,7 @@ const Results = ({ results }) => {
                         </ul>
                     </div>
 
-                    
+
                     <div>
                         <h3 className="text-xl font-semibold mb-4 font-geist">In-Depth Category Scores</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
