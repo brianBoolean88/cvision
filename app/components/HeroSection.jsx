@@ -8,7 +8,7 @@ const HeroSection = () => {
                     Welcome to CVision
                 </h1>
                 <p className="text-lg md:text-xl mb-8 font-medium">
-                    AI-powered resume grader built with AWS and NLP. Make your job application stand out.
+                    Resume grader built with AWS, Python, and NextJS. Make your job application stand out.
                 </p>
                 <a
                     href="#features"

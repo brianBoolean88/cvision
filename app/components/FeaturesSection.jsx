@@ -7,7 +7,7 @@ const FeaturesSection = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     <div className="p-6 border rounded-xl shadow hover:shadow-lg transition">
                         <h3 className="text-xl font-semibold mb-2">AI Resume Analysis</h3>
-                        <p>Instant feedback on your resume’s strengths and weaknesses using cutting-edge NLP models.</p>
+                        <p>Instant feedback on your resume’s strengths and weaknesses using cutting-edge Lambda Python AWS.</p>
                     </div>
                     <div className="p-6 border rounded-xl shadow hover:shadow-lg transition">
                         <h3 className="text-xl font-semibold mb-2">AWS Integration</h3>
