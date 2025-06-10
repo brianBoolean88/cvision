@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
 const FileUpload = () => {
     const [fileName, setFileName] = useState(null);
@@ -43,12 +44,35 @@ const FileUpload = () => {
         return file.name; // key used to retrieve it later
     }
 
+    async function extractTextFromPdf(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
 
-    async function analyzeResume(fileName) {
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+        }
+
+        return fullText;
+    }
+
+
+    // Usage in React component:
+    async function analyzeResume(file, fileName) {
+
+        GlobalWorkerOptions.workerSrc = new URL(
+            'pdfjs-dist/build/pdf.worker.min.mjs',
+            import.meta.url
+        ).toString();
+        const extractedText = await extractTextFromPdf(file);
+
+        console.log(JSON.stringify({ fileName, extractedText }));
         const response = await fetch('https://x1rtfdikxc.execute-api.us-west-1.amazonaws.com/dev', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fileName }),
+            body: JSON.stringify({ fileName, extractedText }),
         });
 
         if (!response.ok) {
@@ -77,12 +101,14 @@ const FileUpload = () => {
             return;
         }
 
+        alert("Please wait and do not leave the page while we upload and analyze your resume...");
+
         uploadPDF(file)
-            .then((key) => {
-                console.log("File uploaded successfully:", key);
+            .then((filename) => {
+                console.log("File uploaded successfully:", filename);
                 // Here you can redirect to results or show a success message
                 // router.push(`/results?fileName=${key}`);
-                analyzeResume(key)
+                analyzeResume(file, filename)
                     .then((result) => {
                         console.log("Analysis result:", result);
                         // You can redirect to results page with the analysis data
@@ -94,7 +120,7 @@ const FileUpload = () => {
                         console.error("Error analyzing resume:", error);
                         alert("Failed to analyze resume. Please try again.");
                     });
-                
+
             })
         //router.push('/results');
     };
