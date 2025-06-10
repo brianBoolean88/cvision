@@ -2,7 +2,7 @@
   <img src="/public/Icon.jpg" alt="Resume Screener Logo" width="200"/>
 </p>
 
-<h1 align="center">📄 Resume Screener</h1>
+<h1 align="center">📄CVision: Resume Screener</h1>
 <p align="center">
   A fully serverless AI resume screening app powered by <strong>AWS Lambda</strong> and <strong>Next.js</strong>.<br/>
   Built to impress recruiters with fast, accurate, and scalable resume analysis.
