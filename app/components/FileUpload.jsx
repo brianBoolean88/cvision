@@ -69,7 +69,7 @@ const FileUpload = () => {
         const extractedText = await extractTextFromPdf(file);
 
         console.log(JSON.stringify({ fileName, extractedText }));
-        const response = await fetch('https://x1rtfdikxc.execute-api.us-west-1.amazonaws.com/dev', {
+        const response = await fetch(process.env.AWS_API_GATEWAY_LINK, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ fileName, extractedText }),
