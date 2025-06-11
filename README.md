@@ -12,7 +12,7 @@
 
 ## 🚀 Project Overview
 
-**Resume Screener** allows users to upload a PDF resume, extract its content client-side in the browser using `pdfjs-dist`, and analyze it using a Python-based AWS Lambda backend. The Lambda function scores resumes based on keyword detection, regex-based measurable achievement recognition, and soft skill analysis — storing results in DynamoDB for fast retrieval.
+**Resume Screener** allows users to upload a PDF resume to AWS S3 Bucket, extract its content client-side in the browser using `pdfjs-dist`, and analyze it using a Python-based AWS Lambda backend. The Lambda function scores resumes based on keyword detection, regex-based measurable achievement recognition, and soft skill analysis — storing results in DynamoDB for fast retrieval.
 
 ---
 
